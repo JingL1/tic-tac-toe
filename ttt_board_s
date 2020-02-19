@@ -1,0 +1,132 @@
+#!/bin/bash
+
+# @file ttt_board_s
+#
+# Defines board and functions for tic-tac-toe (naughts and crosses)
+# This implementation uses a string to represent the board
+#
+# @date Jan 1, 2020
+# @author philip gust
+#
+
+##
+#  Initialize empty board.
+#
+#  @return 0 and outputs the empty board to stdout
+#
+initBoard() {
+
+    declare boardStr="_________"
+    echo $boardStr
+    return 0
+}
+
+##
+#  Mark the board position with the marker of a player (X or O).
+#  
+#  @param theMarker the marker for a player (X or O)
+#  @param boardPos the row major position on the board (1-9)
+#  @param boardStr the board
+#  @return 0 and outputs new board to stdout if board position 
+#    marked, 1 and outputs original board to stdout if invalid 
+#    marker or position
+#
+markBoard() {
+
+    local theMarker=$1
+    local boardPos=$2
+    local boardStr=$3
+
+    local emptyMark="_"
+    local -i index
+    local index=$((boardPos-1))
+
+    if ((boardPos > 9)) || ((boardPos < 1))
+    then
+        echo $boardStr
+    	return 1
+    elif [ ${boardStr:$index:1} = $emptyMark ]
+    then
+    	buffer=${boardStr:0:${index}}${theMarker}${boardStr:${boardPos}}
+    	echo $buffer
+    	return 0
+    else
+        echo $boardStr
+    	return 1
+    fi
+}
+
+##
+#  Determines whether given marker has won. Only if
+#  marker has three columns in row or three rows in
+#  column, or all in one of the two diagonals.
+#
+#  @param marker: the X or O marker
+#  @param boardStr: the board
+#  @return 0 if marker has won, 1 otherwise.
+#
+hasWon() {
+    # your code here
+    local marker=$1
+    local boardStr=$2
+    if [ ${boardStr:0:1} = $marker ] && [ ${boardStr:1:1} = $marker ] && [ ${boardStr:2:1} = $marker ]
+    then
+    	return 0
+    elif [ ${boardStr:3:1} = $marker ] && [ ${boardStr:4:1} = $marker ] && [ ${boardStr:5:1} = $marker ]
+    then
+    	return 0
+    elif [ ${boardStr:6:1} = $marker ] && [ ${boardStr:7:1} = $marker ] && [ ${boardStr:8:1} = $marker ]
+    then
+    	return 0
+    elif [ ${boardStr:0:1} = $marker ] && [ ${boardStr:3:1} = $marker ] && [ ${boardStr:6:1} = $marker ]
+    then
+    	return 0
+    elif [ ${boardStr:1:1} = $marker ] && [ ${boardStr:4:1} = $marker ] && [ ${boardStr:7:1} = $marker ]
+    then
+    	return 0
+    elif [ ${boardStr:2:1} = $marker ] && [ ${boardStr:5:1} = $marker ] && [ ${boardStr:8:1} = $marker ]
+    then
+    	return 0
+    elif [ ${boardStr:0:1} = $marker ] && [ ${boardStr:4:1} = $marker ] && [ ${boardStr:8:1} = $marker ]
+    then
+    	return 0
+    elif [ ${boardStr:2:1} = $marker ] && [ ${boardStr:4:1} = $marker ] && [ ${boardStr:6:1} = $marker ]
+    then
+    	return 0
+    else
+    	return 1
+    fi
+
+}
+
+##
+#  Display the board.
+#
+#  @param boardStr: the board
+#
+displayBoard() {
+
+    local i
+    local boardStr=$1
+    local emptyMark="_"
+    echo "-------------"
+
+    for ((i=1; i < 10 ; i+=1)); do
+		local mark=i-1
+        printf "| "
+
+        if [ ${boardStr:mark:1} != $emptyMark ]
+        then
+            printf "%s " "${boardStr:mark:1}"
+        else
+            printf "%s " "$i"
+        fi
+
+        if [ $(($i%3)) = 0 ]
+        then
+            printf "|\n"
+            echo "-------------"
+        fi
+	done
+
+}

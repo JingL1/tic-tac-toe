@@ -1,0 +1,148 @@
+#!/bin/bash
+
+# @file ttt_s_test
+#
+# Tic-Tac-Toe (Naughts and Crosses)
+# Tests the string representation of the board
+#
+# Markers: X: x marker, O: o marker, _: no marker
+#
+# @date Jan 1, 2020
+# @author philip gust
+#
+
+# read ttt board definitions
+dir=$(dirname "$0")
+source "$dir/ttt_board_s"
+source "$dir/unit_test"
+
+
+##
+#  Play an interactive game of tic-tac-toe.
+#
+test_X_win() {
+	# initialize the board
+	local tttBoard=$(initBoard)
+	assertStringEqual "$tttBoard" "_________"
+	
+	# X first move to position 1
+	tttBoard="$(markBoard X 1 $tttBoard)"
+	assertStringEqual "$tttBoard" "X________"
+
+	# O first move to position 9
+	tttBoard="$(markBoard O 9 $tttBoard)"
+	assertStringEqual "$tttBoard" "X_______O"
+
+    ### Additional tests here  for X winning game
+    # Testing for: X has won
+    # X wins on a row {1 2 3}
+	hasWon X "XXX______"
+	assertStatusSuccess
+
+	# X wins on a row {4 5 6}
+	hasWon X "___XXX___"
+	assertStatusSuccess
+
+	# X wins on a row {7 8 9}
+	hasWon X "______XXX"
+	assertStatusSuccess
+
+    # X wins on a column {1 4 7}
+    hasWon X "X__X__X__"
+	assertStatusSuccess
+
+	# X wins on a column {2 5 8}
+	hasWon X "_X__X__X_"
+	assertStatusSuccess
+
+	# X wins on a column {3 6 9}
+	hasWon X "__X__X__X"
+	assertStatusSuccess
+
+	# X wins on diagonal {1 5 9}
+	hasWon X "X___X___X"
+	assertStatusSuccess
+
+	# X wins on diagonal {3 5 7}
+	hasWon X "__X_X_X__"
+	assertStatusSuccess
+
+	# Testing for: X has not won after 9 moves
+    # X moves into {1 3 4 5 8}
+    hasWon X "X_XXX__X_"
+	assertStatusFailure
+
+	# X moves into {1 2 5 6 7}
+	hasWon X "XX__XXX__"
+	assertStatusFailure
+
+	# X moves into {1 3 5 6 8}
+	hasWon X "X_X_XX_X_"
+	assertStatusFailure
+
+	# X moves into {2 3 4 5 9}
+	hasWon X "_XXXX___X"
+	assertStatusFailure
+
+	# X moves into {1 2 6 7 9}
+	hasWon X "XX___XX_X"
+	assertStatusFailure
+
+	# X moves into {2 3 4 7 9}
+	hasWon X "_XXX__X_X"
+	assertStatusFailure
+
+    # O has not won
+    # Case I: X has won in row {1 2 3} |  {4 5 6} | {7 8 9}
+	hasWon O "XXXOO____"
+	assertStatusFailure
+
+	hasWon O "OO_XXX___"
+	assertStatusFailure
+
+	hasWon O "O_O___XXX"
+	assertStatusFailure
+
+    # Case II: X has won on a column {1 4 7} |  {2 5 8} | {3 6 9}
+	hasWon O "X__XO_XO_"
+	assertStatusFailure
+
+	hasWon O "_XO_X__XO"
+	assertStatusFailure
+
+	hasWon O "O_X__XO_X"
+	assertStatusFailure
+
+	# Case III: X has won on diagonal {1 5 9} |  {3 5 7}
+	hasWon O "X_O_X_O_X"
+	assertStatusFailure
+
+	hasWon O "O_X_XOX__"
+	assertStatusFailure
+
+	# Case IV: neither X nor O has won after 9 moves
+	# X locates on:  {1 3 4 5 8} | {1 2 5 6 7} | {1 3 5 6 8} | {2 3 4 5 9} | {1 2 6 7 9} | {2 3 4 7 9}
+    hasWon O "XOXXXOOXO"
+	assertStatusFailure
+
+	hasWon O "XXOOXXXOO"
+	assertStatusFailure
+
+	hasWon O "XOXOXXOXO"
+	assertStatusFailure
+
+	hasWon O "OXXXXOOOX"
+	assertStatusFailure
+
+	hasWon O "XXOOOXXOX"
+	assertStatusFailure
+
+	hasWon X "OXXXOOXOX"
+	assertStatusFailure
+
+}
+
+runUnitTest test_X_win
+
+# show unit test summary
+unitTestSummary

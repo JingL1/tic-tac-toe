@@ -1,0 +1,129 @@
+#!/bin/bash
+
+# @file ttt_board_a
+#
+# Defines board functions for tic-tac-toe (naughts and crosses)
+# This implementation uses an array to represent the board
+#
+# @date Jan 1, 2020
+# @author philip gust
+#
+
+##
+#  Initialize empty board.
+#
+#  @param boardArr reference to the board
+#
+initBoard() {
+    # your code here
+    local -n boardArr=$1
+    boardArr=( _ _ _ _ _ _ _ _ _ )
+    
+}
+
+##
+#  Mark the board position with the marker of a player (X or O).
+#
+#  @param theMarker: the marker for a player (X or O)
+#  @param boardPos: the row major position on the board (1-9)
+#  @param boardArr: reference to the board
+#  @return 0 if board position marked, 1 if cannot mark position
+#
+markBoard() {
+
+    local theMarker=$1
+    local boardPos=$2
+    local -n boardArr=$3
+    local emptyMark="_"
+
+    if ((boardPos > 9)) || ((boardPos < 1)) 
+    then
+    	echo "Out of range! Please try again:"
+    	return 1
+    elif [ ${boardArr[boardPos-1]} = $emptyMark ]
+    then
+    	boardArr[boardPos-1]=$theMarker
+    	return 0
+    else
+    	echo "Already marked! Please try again:"
+    	return 1	
+    fi
+}
+
+##
+#  Determines whether given marker has won. Only if
+#  marker has three columns in row or three rows in
+#  column, or all in one of the two diagonals.
+#
+#  @param marker the X or O marker
+#  @param boardArr reference to the board
+#  @return 0 if marker has won, 1 otherwise.
+#
+hasWon() {
+    # your code here
+    local marker=$1
+    local -n boardArr=$2
+    if [ ${boardArr[0]} = $marker ] && [ ${boardArr[1]} = $marker ] && [ ${boardArr[2]} = $marker ]
+    then
+    	return 0
+    elif [ ${boardArr[3]} = $marker ] && [ ${boardArr[4]} = $marker ] && [ ${boardArr[5]} = $marker ]
+    then
+    	return 0
+    elif [ ${boardArr[6]} = $marker ] && [ ${boardArr[7]} = $marker ] && [ ${boardArr[8]} = $marker ]
+    then
+    	return 0
+    elif [ ${boardArr[0]} = $marker ] && [ ${boardArr[3]} = $marker ] && [ ${boardArr[6]} = $marker ]
+    then
+    	return 0
+    elif [ ${boardArr[1]} = $marker ] && [ ${boardArr[4]} = $marker ] && [ ${boardArr[7]} = $marker ]
+    then
+    	return 0
+    elif [ ${boardArr[2]} = $marker ] && [ ${boardArr[5]} = $marker ] && [ ${boardArr[8]} = $marker ]
+    then
+    	return 0
+    elif [ ${boardArr[0]} = $marker ] && [ ${boardArr[4]} = $marker ] && [ ${boardArr[8]} = $marker ]
+    then
+    	return 0
+    elif [ ${boardArr[2]} = $marker ] && [ ${boardArr[4]} = $marker ] && [ ${boardArr[6]} = $marker ]
+    then
+    	return 0
+    else 
+    	return 1
+    fi
+}
+
+##
+#  Display the board.
+#
+#  @param boardArr reference to the board
+#
+displayBoard() {
+
+    local i
+    local -n boardArr=$1
+    local emptyMark="_"
+    echo "-------------"
+
+    for ((i=1; i < 10 ; i+=1)); do
+		local mark=i-1
+        printf "| "
+
+        if [[ ${boardArr[mark]} != $emptyMark ]]
+        then
+            printf "%s " "${boardArr[mark]}"
+        else
+            printf "%s " "$i"
+        fi
+
+        if [ $(($i%3)) = 0 ]
+        then
+            printf "|\n"
+            echo "-------------"
+        fi
+	done
+
+}
+
+
+
+

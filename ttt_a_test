@@ -1,0 +1,180 @@
+#!/bin/bash
+
+# @file ttt_a_test
+#
+# Tic-Tac-Toe (Naughts and Crosses)
+# Tests the array representation of the board
+#
+# Markers: X: x marker, O: o marker, _: no marker
+#
+# @date Jan 1, 2020
+# @author philip gust
+#
+
+# read ttt board definitions
+dir=$(dirname "$0")
+source "$dir/ttt_board_a"
+source "$dir/unit_test"
+
+
+##
+#  Play an interactive game of tic-tac-toe.
+#
+test_X_win() {
+	declare -a tttBoard			# the ttt board
+	
+	# initialize the board
+	initBoard tttBoard
+	sol=( _ _ _ _ _ _ _ _ _ )
+	assertArrayEqual tttBoard sol
+	
+	# X first move to position 1
+	markBoard X 1 tttBoard
+	sol=( X _ _ _ _ _ _ _ _ )
+	assertArrayEqual tttBoard sol
+
+	# Y first move to position 9
+	markBoard O 9 tttBoard
+	sol=( X _ _ _ _ _ _ _ O )
+	assertArrayEqual tttBoard sol
+
+    ### Additional tests here  for X winning game
+    # Testing for: X has won
+    # X wins on a row {1 2 3}
+    board=( X X X _ _ _ _ _ _ )
+	hasWon X board
+	assertStatusSuccess
+
+	# X wins on a row {4 5 6}
+	board=( _ _ _ X X X _ _ _ )
+	hasWon X board
+	assertStatusSuccess
+
+	# X wins on a row {7 8 9}
+	board=( _ _ _ _ _ _ X X X )
+	hasWon X board
+	assertStatusSuccess
+
+    # X wins on a column {1 4 7}
+    board=( X _ _ X _ _ X _ _ )
+	hasWon X board
+	assertStatusSuccess
+
+	# X wins on a column {2 5 8}
+	board=( _ X _ _ X _ _ X _ )
+	hasWon X board
+	assertStatusSuccess
+
+	# X wins on a column {3 6 9}
+	board=( _ _ X _ _ X _ _ X )
+	hasWon X board
+	assertStatusSuccess
+
+	# X wins on diagonal {1 5 9}
+	board=( X _ _ _ X _ _ _ X )
+	hasWon X board
+	assertStatusSuccess
+
+	# X wins on diagonal {3 5 7}
+	board=( _ _ X _ X _ X _ _ )
+	hasWon X board
+	assertStatusSuccess
+
+	# Testing for: X has not won after 9 moves
+    # X moves into {1 3 4 5 8}
+    board=( X _ X X X _ _ X _ )
+    hasWon X board
+	assertStatusFailure
+
+	# X moves into {1 2 5 6 7}
+	board=( X X _ _ X X X _ _ )
+    hasWon X board
+	assertStatusFailure
+
+	# X moves into {1 3 5 6 8}
+	board=( X _ X _ X X _ X _ )
+    hasWon X board
+	assertStatusFailure
+
+	# X moves into {2 3 4 5 9}
+	board=( _ X X X X _ _ _ X )
+    hasWon X board
+	assertStatusFailure
+
+	# X moves into {1 2 6 7 9}
+	board=( X X _ _ _ X X _ X )
+    hasWon X board
+	assertStatusFailure
+
+	# X moves into {2 3 4 7 9}
+	board=( _ X X X _ _ X _ X )
+    hasWon X board
+	assertStatusFailure
+
+    # O has not won
+    # Case I: X has won in row {1 2 3} |  {4 5 6} | {7 8 9}
+    board=( X X X O O _ _ _ _ )
+    hasWon O board
+	assertStatusFailure
+
+	board=( O O _ X X X _ _ _ )
+    hasWon O board
+	assertStatusFailure
+
+	board=( O _ O _ _ _ X X X )
+    hasWon O board
+	assertStatusFailure
+
+    # Case II: X has won on a column {1 4 7} |  {2 5 8} | {3 6 9}
+    board=( X _ _ X O _ X O _ )
+    hasWon O board
+	assertStatusFailure
+
+	board=( _ X O _ X _ _ X O )
+    hasWon O board
+	assertStatusFailure
+
+	board=( O _ X _ _ X O _ X )
+    hasWon O board
+	assertStatusFailure
+
+	# Case III: X has won on diagonal {1 5 9} |  {3 5 7}
+	board=( X _ O _ X _ O _ X )
+    hasWon O board
+	assertStatusFailure
+
+	board=( O _ X _ X O X _ _ )
+    hasWon O board
+	assertStatusFailure
+
+	# Case IV: neither X nor O has won after 9 moves
+	# X locates on:  {1 3 4 5 8} | {1 2 5 6 7} | {1 3 5 6 8} | {2 3 4 5 9} | {1 2 6 7 9} | {2 3 4 7 9}
+    board=( X O X X X O O X O )
+    hasWon O board
+	assertStatusFailure
+
+	board=( X X O O X X X O O )
+    hasWon X board
+	assertStatusFailure
+
+	board=( X O X O X X O X O )
+    hasWon O board
+	assertStatusFailure
+
+	board=( O X X X X O O O X )
+    hasWon O board
+	assertStatusFailure
+
+	board=( X X O O O X X O X )
+    hasWon O board
+	assertStatusFailure
+
+	board=( O X X X O O X O X )
+    hasWon O board
+	assertStatusFailure
+}
+
+runUnitTest test_X_win
+
+# show unit test summary
+unitTestSummary
